@@ -12,21 +12,21 @@ class World:
         self.regions = regions
         self.instant = 0
 
-    def advance(self) -> None:
-        print(f"t={self.instant} Advancing....")
+    def advance(self, verbose=False) -> None:
+        if verbose: print(f"t={self.instant} Advancing....")
         for network_zone in self.network_zones.values():
             network_zone: NetworkZone
             network_zone.update_demand()
 
         for zone_name, zone in self.network_zones.items():
             zone: NetworkZone
-            print(f"NetworkZone {zone_name} is now demanding {zone.get_demand()} for its {zone.cluster.get_size()} users.")
+            if verbose: print(f"NetworkZone {zone_name} is now demanding {zone.get_demand()} for its {zone.cluster.get_size()} users.")
 
         for uav in self.uavs.values():
             uav: UAV
             demand = uav.get_current_demand()
-            print(f"Demand for UAV {uav.name} is {demand}.... current level is {uav.current_resource_level}")
-            if not uav.supress_demand(demand):
+            if verbose: print(f"Demand for UAV {uav.name} is {demand}.... current level is {uav.current_resource_level}")
+            if not uav.supress_demand(demand) and verbose:
                 print(f"FAILED TO SUPRESS DEMAND!!!!!")
 
         self.instant += 1
