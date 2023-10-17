@@ -4,18 +4,44 @@ from network import InterconnectedDevice, NetworkZone
 
 class UAV(DemandConsumer, InterconnectedDevice):
     def __init__(self, name: str, battery_level: int, serving_zone: NetworkZone = None) -> None:
+        """
+        Initializes a UAV (Unmanned Aerial Vehicle) with a name, battery level, and an optional serving zone.
+
+        Args:
+        - name (str): The name of the UAV.
+        - battery_level (int): The initial battery level of the UAV.
+        - serving_zone (NetworkZone, optional): The optional serving zone that the UAV is associated with (default is None).
+        """
         DemandConsumer.__init__(self, resource=battery_level)
         InterconnectedDevice.__init__(self)
         self.serving_zone = serving_zone
         self.name = name
 
     def attach_to(self, zone: NetworkZone):
+        """
+        Attach the UAV to a specified NetworkZone.
+
+        Args:
+        - zone (NetworkZone): The NetworkZone to which the UAV will be attached.
+        """
         self.serving_zone = zone
 
     def get_serving_zone_demand(self) -> int:
+        """
+        Get the demand from the serving zone, if the UAV is associated with one.
+
+        Returns:
+        - int: The demand from the serving zone, or 0 if not associated with any serving zone.
+        """
         return self.serving_zone.get_demand() if self.serving_zone else 0
 
     def get_current_demand(self) -> int:
+        """
+        Calculate the total demand on the UAV, considering both the serving zone and incoming devices.
+
+        Returns:
+        - int: The total demand on the UAV.
+        """
         demand_from_incoming_devices = 0
         for uav in self.incoming_devices:
             uav: UAV
@@ -26,6 +52,12 @@ class UAV(DemandConsumer, InterconnectedDevice):
         return total
     
     def handover(self, other):
+        """
+        Perform a handover of the serving zone and connections with another UAV.
+
+        Args:
+        - other (UAV): Another UAV with which the handover is being performed.
+        """
         source_zone = self.serving_zone
         self.serving_zone = other.serving_zone
         other.serving_zone = source_zone
@@ -67,6 +99,12 @@ class UAV(DemandConsumer, InterconnectedDevice):
             device.set_outgoing_device(other)
 
     def __repr__(self) -> str:
+        """
+        Returns a string representation of the UAV, including its name, battery level, serving zone, incoming devices, and outgoing device.
+
+        Returns:
+        - str: A string representing the UAV and its attributes.
+        """
         string = f"UAV {self.name} "
         string += f"- battery {self.current_resource_level} "
         string += f"- serving zone {self.serving_zone.name} "

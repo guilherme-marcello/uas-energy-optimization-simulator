@@ -7,15 +7,36 @@ from random import randint
 
 class World:
     def __init__(self, uavs: dict, network_zones: dict, regions: dict) -> None:
+        """
+        Initializes a World with UAVs, network zones, and geographical regions.
+
+        Args:
+        - uavs (dict): A dictionary of UAVs in the world.
+        - network_zones (dict): A dictionary of network zones in the world.
+        - regions (dict): A dictionary of geographical regions in the world.
+        """
         self.uavs = uavs
         self.network_zones = network_zones
         self.regions = regions
         self.instant = 0
 
     def switch(self, uav1: UAV, uav2: UAV):
+        """
+        Perform a handover of serving zones between two UAVs.
+
+        Args:
+        - uav1 (UAV): The first UAV.
+        - uav2 (UAV): The second UAV.
+        """
         uav1.handover(uav2)
 
     def advance(self, verbose=False) -> None:
+        """
+        Advance the simulation to the next time step, updating demand and managing resources.
+
+        Args:
+        - verbose (bool, optional): Whether to print detailed information during the advancement (default is False).
+        """
         if verbose: print(f"t={self.instant} Advancing....")
         for network_zone in self.network_zones.values():
             network_zone: NetworkZone
@@ -36,6 +57,12 @@ class World:
 
 
     def __repr__(self) -> str:
+        """
+        Returns a string representation of the World, including UAVs, network zones, and regions.
+
+        Returns:
+        - str: A string representing the World and its components.
+        """
         string = "World - BEGIN\n"
         string += f"{self.uavs.values()}\n{self.network_zones.values()}"
         string += "World - END\n"
