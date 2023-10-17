@@ -12,6 +12,9 @@ class World:
         self.regions = regions
         self.instant = 0
 
+    def switch(self, uav1: UAV, uav2: UAV):
+        uav1.handover(uav2)
+
     def advance(self, verbose=False) -> None:
         if verbose: print(f"t={self.instant} Advancing....")
         for network_zone in self.network_zones.values():
