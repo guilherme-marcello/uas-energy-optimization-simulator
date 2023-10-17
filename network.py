@@ -28,6 +28,9 @@ class InterconnectedDevice:
 
     def add_incoming_device(self, device):
         self.incoming_devices.append(device)
+
+    def remove_incoming_device(self, device):
+        self.incoming_devices.remove(device)
     
     def set_outgoing_device(self, device):
         self.outgoing_device = device
