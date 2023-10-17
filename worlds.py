@@ -87,3 +87,49 @@ class World1(World):
 
     def __init__(self) -> None:
         super().__init__(World1.UAVS, World1.NETWORK_ZONES, World1.REGIONS)
+
+class World2(World):
+    default_user = User(
+        base_cost=5,
+        cost_fluctuations=(0, 0)
+    )
+
+    REGIONS = {
+        "A": Circle(center=Position(x=2, y=2)),
+        "B": Circle(center=Position(x=4, y=6)),
+        "C": Circle(center=Position(x=5, y=2))
+    }
+
+
+    NETWORK_ZONES = dict()
+    for zone_name in "ABC":
+        NETWORK_ZONES[zone_name] = NetworkZone(
+            name=zone_name,
+            region=REGIONS.get(zone_name), 
+            cluster=UserCluster.from_nsized_equal_users(
+                template_user=default_user, n=ord(zone_name) % 64
+            )
+        )
+
+    UAVS = dict()
+    for network_zone_name in "ABC":
+        UAVS[network_zone_name] = UAV(
+            name=f"networker_{network_zone_name}",
+            battery_level=ord(network_zone_name) * (5 - (ord(network_zone_name) % 64)) + (100*(ord(network_zone_name) % 2)) ,
+            serving_zone=NETWORK_ZONES.get(network_zone_name)
+        )
+
+    uav_A: UAV = UAVS["A"]
+    uav_B: UAV = UAVS["B"]
+    uav_C: UAV = UAVS["C"]
+
+    Gateway.create(
+        _from=UAVS["A"], _to=UAVS["B"]
+    )
+
+    Gateway.create(
+        _from=UAVS["B"], _to=UAVS["C"]
+    )
+
+    def __init__(self) -> None:
+        super().__init__(World2.UAVS, World2.NETWORK_ZONES, World2.REGIONS)
